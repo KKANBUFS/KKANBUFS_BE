@@ -1,7 +1,6 @@
 package com.betrue.kkanbufs_be.controller;
 
-import com.betrue.kkanbufs_be.request.Login;
-import com.betrue.kkanbufs_be.request.Signup;
+import com.betrue.kkanbufs_be.request.*;
 import com.betrue.kkanbufs_be.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +38,16 @@ public class AuthController {
                 .build();
     }
 
-    @PostMapping("/auth/signup")
-    public void signup(@RequestBody @Valid Signup signup){
+    @PostMapping("/auth/student/signup")
+    public void signup(@RequestBody @Valid StudentSignup signup){
+        authService.signup(signup);
+    }
+    @PostMapping("/auth/college/signup")
+    public void signup(@RequestBody @Valid CollegeSignup signup){
+        authService.signup(signup);
+    }
+    @PostMapping("/auth/partner/signup")
+    public void signup(@RequestBody @Valid PartnerSignup signup){
         authService.signup(signup);
     }
 

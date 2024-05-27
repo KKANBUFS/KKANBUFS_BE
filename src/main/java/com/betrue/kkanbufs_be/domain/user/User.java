@@ -1,10 +1,13 @@
-package com.betrue.kkanbufs_be.domain;
+package com.betrue.kkanbufs_be.domain.user;
 
+import com.betrue.kkanbufs_be.domain.Post;
+import com.betrue.kkanbufs_be.domain.Session;
+import com.betrue.kkanbufs_be.request.PostCreate;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,14 +15,16 @@ import java.util.List;
 
 @Getter
 @Entity
-/*@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "DTYPE")*/
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     private String name;
 
@@ -29,11 +34,12 @@ public class User {
     private String password;
 
     private LocalDateTime createdAt;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Session> sessions = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 
     public Session addSession(){
         Session session = Session.builder()
@@ -45,7 +51,16 @@ public class User {
         return session;
     }
 
-    @Builder
+    public Post addPost(PostCreate postCreate){
+        Post post = Post.builder()
+                .title(postCreate.getTitle())
+                .content(postCreate.getContent())
+                .build();
+
+        posts.add(post);
+        return post;
+    }
+
     public User(String name, String loginId, String password) {
         this.name = name;
         this.loginId = loginId;

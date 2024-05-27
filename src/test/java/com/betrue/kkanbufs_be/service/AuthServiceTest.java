@@ -1,12 +1,11 @@
 package com.betrue.kkanbufs_be.service;
 
 
-import com.betrue.kkanbufs_be.domain.User;
+import com.betrue.kkanbufs_be.domain.user.User;
 import com.betrue.kkanbufs_be.exception.AlreadyExistsEmailException;
 import com.betrue.kkanbufs_be.repository.UserRepository;
-import com.betrue.kkanbufs_be.request.Signup;
+import com.betrue.kkanbufs_be.request.StudentSignup;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ class AuthServiceTest {
     @DisplayName("회원가입 성공")
     void test1() {
         // given
-        Signup signup = Signup.builder()
+        StudentSignup signup = StudentSignup.builder()
                 .loginId("userid")
                 .password("1234")
                 .name("김동혁")
@@ -61,7 +60,7 @@ class AuthServiceTest {
                 .build();
         userRepository.save(user);
 
-        Signup signup = Signup.builder()
+        StudentSignup signup = StudentSignup.builder()
                 .loginId("hodolman88@gmail.com")
                 .password("1234")
                 .name("호돌맨")

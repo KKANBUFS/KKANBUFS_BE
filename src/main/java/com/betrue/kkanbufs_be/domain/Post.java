@@ -1,5 +1,6 @@
 package com.betrue.kkanbufs_be.domain;
 
+import com.betrue.kkanbufs_be.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

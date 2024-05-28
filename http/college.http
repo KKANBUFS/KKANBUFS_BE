@@ -5,7 +5,6 @@ Content-Type: application/json
 
 {
   "partnerId": "partner1",
-  "collegeId": "college1",
   "benefit": "대충 내용"
 }
 

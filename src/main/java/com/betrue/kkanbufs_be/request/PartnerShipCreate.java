@@ -12,14 +12,11 @@ import lombok.ToString;
 public class PartnerShipCreate {
     private String partnerId;
 
-    private String collegeId;
-
     private String benefit;
 
     @Builder
-    public PartnerShipCreate(String partnerId, String collegeId, String benefit) {
+    public PartnerShipCreate(String partnerId, String benefit) {
         this.partnerId = partnerId;
-        this.collegeId = collegeId;
         this.benefit = benefit;
     }
 

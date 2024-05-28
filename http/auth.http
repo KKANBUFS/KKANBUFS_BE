@@ -49,7 +49,7 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "loginId": "userid1",
+  "loginId": "college1",
   "password": "1234"
 }
 

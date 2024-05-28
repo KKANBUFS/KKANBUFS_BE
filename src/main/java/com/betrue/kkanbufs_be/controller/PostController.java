@@ -47,7 +47,7 @@ public class PostController {
 
     //글 등록
     @PostMapping("/posts")
-    public void post(NativeWebRequest webRequest, @RequestBody @Valid PostCreate request){
+    public void post(@RequestBody @Valid PostCreate request,NativeWebRequest webRequest){
         request.validate();
         Session session = authService.getSession(webRequest);
 

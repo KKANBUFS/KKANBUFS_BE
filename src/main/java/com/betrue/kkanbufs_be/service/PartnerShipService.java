@@ -1,6 +1,7 @@
 package com.betrue.kkanbufs_be.service;
 
 import com.betrue.kkanbufs_be.domain.PartnerShip;
+import com.betrue.kkanbufs_be.domain.Session;
 import com.betrue.kkanbufs_be.domain.user.College;
 import com.betrue.kkanbufs_be.domain.user.Partner;
 import com.betrue.kkanbufs_be.exception.PostNotFound;
@@ -24,9 +25,9 @@ public class PartnerShipService {
 
     private final CollegeRepository collegeRepository;
 
-    public void connection(PartnerShipCreate partnerShipCreate){
+    public void connection(PartnerShipCreate partnerShipCreate, Session session){
         Partner partner = partnerRepository.findByLoginId(partnerShipCreate.getPartnerId()).orElseThrow(PostNotFound::new);
-        College college = collegeRepository.findByLoginId(partnerShipCreate.getCollegeId()).orElseThrow(PostNotFound::new);
+        College college = (College) session.getUser();
 
         PartnerShip partnerShip = PartnerShip.builder()
                 .partner(partner)

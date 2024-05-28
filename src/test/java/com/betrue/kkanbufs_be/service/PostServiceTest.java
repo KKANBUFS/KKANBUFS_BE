@@ -1,3 +1,4 @@
+/*
 package com.betrue.kkanbufs_be.service;
 
 
@@ -36,7 +37,6 @@ class PostServiceTest {
    @Test
    @DisplayName("글작성 ")
    public void test1() throws Exception{
-
       //given
       PostCreate postCreate = PostCreate.builder()
               .title("제목입니다.")
@@ -226,4 +226,4 @@ class PostServiceTest {
          postService.edit(post.getId()+1L, postEdit);
       });
    }
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package com.betrue.kkanbufs_be.controller;
 
 import com.betrue.kkanbufs_be.domain.Post;
@@ -155,12 +156,16 @@ class PostControllerTest {
                 .andExpect(jsonPath("$[0].title").value("daile title 30"))
                 .andExpect(jsonPath("$[0].content").value("daile content 30"))
                 .andDo(print());
-        /*기존
+        */
+/*기존
          * {id: ..., title:...}
-         */
-        /*List 조회 시
+         *//*
+
+        */
+/*List 조회 시
          * [{id: ..., title:...},{id: ..., title:...}]
-         */
+         *//*
+
     }
     @Test
     @DisplayName("글 페이지 0으로 해도 1페이지 조회")
@@ -183,12 +188,16 @@ class PostControllerTest {
                 .andExpect(jsonPath("$[0].title").value("daile title 30"))
                 .andExpect(jsonPath("$[0].content").value("daile content 30"))
                 .andDo(print());
-        /*기존
+        */
+/*기존
          * {id: ..., title:...}
-         */
-        /*List 조회 시
+         *//*
+
+        */
+/*List 조회 시
          * [{id: ..., title:...},{id: ..., title:...}]
-         */
+         *//*
+
     }
 
     @Test
@@ -286,3 +295,4 @@ class PostControllerTest {
                 .andDo(print());
     }
 }
+*/

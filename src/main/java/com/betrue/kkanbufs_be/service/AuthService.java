@@ -1,17 +1,24 @@
 package com.betrue.kkanbufs_be.service;
 
-import com.betrue.kkanbufs_be.domain.Session;
-import com.betrue.kkanbufs_be.domain.User;
+import com.betrue.kkanbufs_be.domain.*;
+import com.betrue.kkanbufs_be.domain.user.College;
+import com.betrue.kkanbufs_be.domain.user.Partner;
+import com.betrue.kkanbufs_be.domain.user.Student;
+import com.betrue.kkanbufs_be.domain.user.User;
 import com.betrue.kkanbufs_be.exception.AlreadyExistsEmailException;
 import com.betrue.kkanbufs_be.exception.InvalidSinginInformation;
+import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.exception.UserNotFound;
+import com.betrue.kkanbufs_be.repository.SessionRepository;
 import com.betrue.kkanbufs_be.repository.UserRepository;
-import com.betrue.kkanbufs_be.request.Login;
-import com.betrue.kkanbufs_be.request.Signup;
+import com.betrue.kkanbufs_be.request.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Optional;
 
@@ -19,7 +26,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
+
+    private final SessionRepository sessionRepository;
 
     @Transactional
     public String signin(Login login) {
@@ -35,15 +45,77 @@ public class AuthService {
         return session.getAccessToken();
     }
     @Transactional
-    public void signup(Signup signup) {
+    public void signup(StudentSignup signup) {
         Optional<User> userOptional = userRepository.findByLoginId(signup.getLoginId());
         if (userOptional.isPresent()) {
             throw new AlreadyExistsEmailException();
         }
-        userRepository.save(User.builder()
-                .name(signup.getName())
-                .password(signup.getPassword())
+        Student student = Student.builder()
                 .loginId(signup.getLoginId())
-                .build());
+                .password(signup.getPassword())
+                .name(signup.getName())
+                .college(signup.getCollege())
+                .dept(signup.getDept())
+                .phoneNum(signup.getPhoneNum())
+                .studentUnm(signup.getStudentUnm())
+                .build();
+
+        userRepository.save(student);
     }
+    @Transactional
+    public void signup(CollegeSignup signup) {
+        Optional<User> userOptional = userRepository.findByLoginId(signup.getLoginId());
+        if (userOptional.isPresent()) {
+            throw new AlreadyExistsEmailException();
+        }
+        College college = College.builder()
+                .loginId(signup.getLoginId())
+                .password(signup.getPassword())
+                .name(signup.getName())
+                .instagram(signup.getInstagram())
+                .build();
+
+        userRepository.save(college);
+    }
+    @Transactional
+    public void signup(PartnerSignup signup) {
+        Optional<User> userOptional = userRepository.findByLoginId(signup.getLoginId());
+        if (userOptional.isPresent()) {
+            throw new AlreadyExistsEmailException();
+        }
+        Partner partner = Partner.builder()
+                .loginId(signup.getLoginId())
+                .password(signup.getPassword())
+                .name(signup.getName())
+                .partnerNum(signup.getPartnerNum())
+                .partnerType(signup.getPartnerType())
+                .city(signup.getCity())
+                .address1(signup.getAddress1())
+                .address2(signup.getAddress2())
+                .build();
+
+        userRepository.save(partner);
+    }
+
+    public Session getSession(NativeWebRequest webRequest) {
+        HttpServletRequest serveletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+        if(serveletRequest == null) {
+            log.error("servlet request is null");
+            throw new Unauthorized();
+        }
+
+        Cookie[] cookies = serveletRequest.getCookies();
+        if(cookies.length==0){
+            log.error("cookie is empty");
+            throw new Unauthorized();
+        }
+
+        String accessToken = cookies[0].getValue();
+
+        Session session = sessionRepository.findByAccessToken(accessToken)
+                .orElseThrow(Unauthorized::new);
+
+        return session;
+    }
+
 }

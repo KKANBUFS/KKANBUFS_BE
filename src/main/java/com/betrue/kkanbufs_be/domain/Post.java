@@ -1,5 +1,6 @@
 package com.betrue.kkanbufs_be.domain;
 
+import com.betrue.kkanbufs_be.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,7 +27,8 @@ public class Post {
     private String content;
 
     @Builder
-    public Post(String title, String content) {
+    public Post(String title, String content, User user) {
+        this.user = user;
         this.title = title;
         this.content = content;
     }

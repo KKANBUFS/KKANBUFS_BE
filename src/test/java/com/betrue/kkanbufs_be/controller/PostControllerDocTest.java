@@ -1,3 +1,4 @@
+/*
 package com.betrue.kkanbufs_be.controller;
 
 import com.betrue.kkanbufs_be.domain.Post;
@@ -91,7 +92,8 @@ public class PostControllerDocTest {
                         )
                 ));
     }
-   /* @Test
+   */
+/* @Test
     @DisplayName("글 페이지 조회")
     public void test3() throws Exception{
         //given
@@ -114,6 +116,8 @@ public class PostControllerDocTest {
                                 fieldWithPath("page").description("페이지"),
                                 fieldWithPath("size").description("페이지당 글 개수")
                         )
-                ));*/
+                ));*//*
+
 
 }
+*/

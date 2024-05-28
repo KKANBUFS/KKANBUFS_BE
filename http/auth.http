@@ -1,13 +1,46 @@
-### 회원가입
+### 학생 회원가입
 
-POST http://localhost:8080/auth/signup
+POST http://localhost:8080/auth/student/signup
 Content-Type: application/json
 
 {
   "name": "김동혁",
-  "loginId": "userid",
-  "password": "1234"
+  "loginId": "userid1",
+  "password": "1234",
+  "studentUnm": "20191769",
+  "college": "이공대",
+  "dept": "컴퓨터공학과",
+  "phoneNum": "010-67687-7657",
+  "sex": true
 }
+
+### 단대 회원가입
+
+POST http://localhost:8080/auth/college/signup
+Content-Type: application/json
+
+{
+  "name": "이공대",
+  "loginId": "college1",
+  "password": "1234",
+  "instagram": "이공대 인스타 주소"
+}
+
+### 업체 회원가입
+POST http://localhost:8080/auth/partner/signup
+Content-Type: application/json
+
+{
+  "name": "역전할머니맥주",
+  "loginId": "partner1",
+  "password": "1234",
+  "partnerType": "요식업",
+  "partnerNum": "051-0000-0000",
+  "city": "부산시",
+  "address1": "모분재로 7번 가길 21",
+  "address2": "2층"
+}
+
 
 
 ### 로그인
@@ -16,7 +49,7 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "loginId": "userid",
+  "loginId": "college1",
   "password": "1234"
 }
 

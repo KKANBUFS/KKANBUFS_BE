@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @ToString
+@SuperBuilder
 public class Signup {
 
     @NotBlank(message = "이름을 입력해주세요")
@@ -18,12 +20,11 @@ public class Signup {
     private String loginId; // 아이디
 
     @NotBlank(message = "비밀번호를 입력해주세요")
-    public final String password;
+    private String password;
 
-    @Builder
-    public Signup(String name,String password, String loginId) {
-        this.password = password;
-        this.loginId = loginId;
+    public Signup(String name, String loginId, String password) {
         this.name = name;
+        this.loginId = loginId;
+        this.password = password;
     }
 }

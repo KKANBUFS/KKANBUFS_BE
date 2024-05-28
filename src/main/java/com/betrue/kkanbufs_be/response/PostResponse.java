@@ -8,7 +8,6 @@ import lombok.Getter;
 * 서비스 정책의 맞는 클래스
 */
 @Getter
-
 public class PostResponse {
     private Long id;
     private String title;

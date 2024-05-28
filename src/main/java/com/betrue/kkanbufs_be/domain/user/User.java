@@ -48,8 +48,8 @@ public class User {
         return session;
     }
 
-    public void removeSession(Session session){
-        sessions.remove(session);
+    public void removeSession(){
+        sessions.clear();
     }
 
     public void addPost(Post post){

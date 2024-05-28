@@ -12,6 +12,8 @@ import com.betrue.kkanbufs_be.exception.UserNotFound;
 import com.betrue.kkanbufs_be.repository.SessionRepository;
 import com.betrue.kkanbufs_be.repository.UserRepository;
 import com.betrue.kkanbufs_be.request.*;
+import com.betrue.kkanbufs_be.response.LoginIdResponse;
+import com.betrue.kkanbufs_be.response.PwResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -97,6 +99,10 @@ public class AuthService {
         userRepository.save(partner);
     }
 
+    public void logout(Session session) {
+       session.getUser().removeSession();
+    }
+
     public Session getSession(NativeWebRequest webRequest) {
         HttpServletRequest serveletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         if(serveletRequest == null) {
@@ -118,4 +124,17 @@ public class AuthService {
         return session;
     }
 
+    public LoginIdResponse findLoginId(FindId findId) {
+        User user = userRepository.findByStudentNum(findId.getStudentNum())
+                .orElseThrow(UserNotFound::new);
+
+        return LoginIdResponse.builder().loginid(user.getLoginId()).build();
+    }
+
+    public PwResponse findPw(FindPw findPW) {
+        User user = userRepository.findByLoginIdAndStudentNum(findPW.getLoginId(), findPW.getStudentNum())
+                .orElseThrow(UserNotFound::new);
+
+        return PwResponse.builder().password(user.getPassword()).build();
+    }
 }

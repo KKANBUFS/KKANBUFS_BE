@@ -5,9 +5,8 @@ import com.betrue.kkanbufs_be.domain.PostEditor;
 import com.betrue.kkanbufs_be.domain.Session;
 import com.betrue.kkanbufs_be.domain.user.User;
 import com.betrue.kkanbufs_be.exception.PostNotFound;
+import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.repository.PostRepository;
-import com.betrue.kkanbufs_be.repository.SessionRepository;
-import com.betrue.kkanbufs_be.repository.UserRepository;
 import com.betrue.kkanbufs_be.request.PostCreate;
 import com.betrue.kkanbufs_be.request.PostEdit;
 import com.betrue.kkanbufs_be.request.PostSearch;
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -68,9 +66,13 @@ public class PostService {
     }
 
     @Transactional
-    public void edit(Long id, PostEdit postEdit) {
+    public void edit(Long id, PostEdit postEdit, Session session) {
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFound::new);
+            .orElseThrow(PostNotFound::new);
+
+        User user = session.getUser();
+
+        if(!user.getId().equals(post.getUser().getId())) throw new Unauthorized();
 
         PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
 
@@ -91,9 +93,13 @@ public class PostService {
         post.edit( editorBuilder.build());*/
     }
 
-    public void delete(Long id) {
+    public void delete(Long id, Session session) {
         Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFound::new);
+
+        User user = session.getUser();
+
+        if(!user.getId().equals(post.getUser().getId())) throw new Unauthorized();
 
         postRepository.delete(post);
     }

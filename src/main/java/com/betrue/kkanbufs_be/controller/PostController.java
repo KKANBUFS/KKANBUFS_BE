@@ -3,6 +3,7 @@ package com.betrue.kkanbufs_be.controller;
 import com.betrue.kkanbufs_be.config.data.UserSession;
 import com.betrue.kkanbufs_be.domain.Session;
 import com.betrue.kkanbufs_be.exception.Unauthorized;
+import com.betrue.kkanbufs_be.exception.UserNotFound;
 import com.betrue.kkanbufs_be.repository.PostRepository;
 import com.betrue.kkanbufs_be.request.PostCreate;
 import com.betrue.kkanbufs_be.request.PostEdit;
@@ -50,7 +51,7 @@ public class PostController {
     public void post(@RequestBody @Valid PostCreate request,NativeWebRequest webRequest){
         request.validate();
         Session session = authService.getSession(webRequest);
-
+        if (session == null) {throw new Unauthorized();}
         postService.write(request,session);
     }
 
@@ -65,13 +66,17 @@ public class PostController {
     }
 
     @PatchMapping("/posts/{postId}")
-    public void edit(@PathVariable(name = "postId") Long postId, @RequestBody @Valid PostEdit request) {
-        postService.edit(postId, request);
+    public void edit(@PathVariable(name = "postId") Long postId, @RequestBody @Valid PostEdit request,NativeWebRequest webRequest) {
+        Session session = authService.getSession(webRequest);
+        if (session == null) {throw new Unauthorized();}
+        postService.edit(postId, request,session);
     }
 
     @DeleteMapping("/posts/{postId}")
-    public void delete(@PathVariable(name = "postId") Long id) {
-        postService.delete(id);
+    public void delete(@PathVariable(name = "postId") Long id, NativeWebRequest webRequest) {
+        Session session = authService.getSession(webRequest);
+        if (session == null) {throw new Unauthorized();}
+        postService.delete(id,session);
     }
 }
 

@@ -23,8 +23,6 @@ public class PartnerShipService {
 
     private final PartnerRepository partnerRepository;
 
-    private final CollegeRepository collegeRepository;
-
     public void connection(PartnerShipCreate partnerShipCreate, Session session){
         Partner partner = partnerRepository.findByLoginId(partnerShipCreate.getPartnerId()).orElseThrow(PostNotFound::new);
         College college = (College) session.getUser();

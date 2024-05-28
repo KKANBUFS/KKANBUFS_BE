@@ -1,16 +1,20 @@
 package com.betrue.kkanbufs_be.controller;
 
-import com.betrue.kkanbufs_be.config.data.UserSession;
+import com.betrue.kkanbufs_be.domain.Session;
+import com.betrue.kkanbufs_be.exception.PostNotFound;
+import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.repository.PostRepository;
 import com.betrue.kkanbufs_be.request.PostCreate;
 import com.betrue.kkanbufs_be.request.PostEdit;
-import com.betrue.kkanbufs_be.request.PostSearch;
+import com.betrue.kkanbufs_be.request.Search;
 import com.betrue.kkanbufs_be.response.PostResponse;
+import com.betrue.kkanbufs_be.service.AuthService;
 import com.betrue.kkanbufs_be.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.List;
 
@@ -35,51 +39,48 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+
+    private final AuthService authService;
     private final PostRepository postRepository;
-
-
-    @GetMapping("/foo")
-    public Long foo(UserSession userSession){
-        log.info(">>>{}", userSession.id);
-
-        return userSession.id;
-    }
-
-    @GetMapping("/bar")
-    public String bar(UserSession userSession){
-        return "인증이 필요한 페이지 입니다.";
-    }
 
     //글 등록
     @PostMapping("/posts")
-    public void post(@RequestBody @Valid PostCreate request){
+    public void post(@RequestBody @Valid PostCreate request,NativeWebRequest webRequest){
         request.validate();
-        postService.write(request);
-        //return postService.write(request);
+        Session session = authService.getSession(webRequest);
+        if (session == null || session.equals("")) {
+            throw new Unauthorized();
+        }
+        postService.write(request,session);
     }
 
     @GetMapping("/posts/{postId}")
     public PostResponse get(@PathVariable(name = "postId") Long id) {
-        //Request 클래스 요청과 벨리데이션 용
-        //Response 클래스 정책등을 반영한 응답 전용 클래스
-
         return postService.get(id);
-        //응답 클래스를 분리하세요(서비스 정책의 맞는)
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getAll(@ModelAttribute PostSearch postSearch) {
+    public List<PostResponse> getAll(@ModelAttribute Search postSearch) {
         return postService.getList(postSearch);
     }
 
     @PatchMapping("/posts/{postId}")
-    public void edit(@PathVariable(name = "postId") Long postId, @RequestBody @Valid PostEdit request) {
-        postService.edit(postId, request);
+    public void edit(@PathVariable(name = "postId") Long postId, @RequestBody @Valid PostEdit request,NativeWebRequest webRequest) {
+        postRepository.findById(postId).orElseThrow(PostNotFound::new);
+        Session session = authService.getSession(webRequest);
+        if (session == null || session.equals("")) {
+            throw new Unauthorized();
+        }
+        postService.edit(postId, request,session);
     }
 
     @DeleteMapping("/posts/{postId}")
-    public void delete(@PathVariable(name = "postId") Long id) {
-        postService.delete(id);
+    public void delete(@PathVariable(name = "postId") Long id, NativeWebRequest webRequest) {
+        Session session = authService.getSession(webRequest);
+        if (session == null || session.equals("")) {
+            throw new Unauthorized();
+        }
+        postService.delete(id,session);
     }
 }
 

@@ -52,10 +52,11 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
-
+/*
 test {
     outputs.dir snippetsDir
 }
+
 
 asciidoctor {
     inputs.dir snippetsDir
@@ -71,3 +72,4 @@ bootJar {
         into "src/main/resources/static/docs"
     }
 }
+*/

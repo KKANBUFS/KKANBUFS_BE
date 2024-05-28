@@ -11,10 +11,10 @@ import lombok.ToString;
 public class PostCreate {
 
     @NotBlank(message = "타이틀을 입력해주세요") //값이 주입될때 검증을 해줌
-    public final String title;
+    private final String title;
 
     @NotBlank(message = "콘텐츠을 입력해주세요")
-    public final String content;
+    private final String content;
 
     @Builder
     public PostCreate(String title, String content) {

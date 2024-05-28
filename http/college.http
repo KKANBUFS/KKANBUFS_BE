@@ -1,0 +1,13 @@
+### 제휴
+
+POST http://localhost:8080/college/partnership
+Content-Type: application/json
+
+{
+  "partnerId": "partner1",
+  "benefit": "대충 내용"
+}
+
+### 제휴 리스트
+
+GET http://localhost:8080/college/partnership?page=1&size=10

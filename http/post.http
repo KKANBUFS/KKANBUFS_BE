@@ -8,8 +8,26 @@ Content-Type: application/json
   "content": "내용입니다."
 }
 
+### get post list
+GET http://localhost:8080/posts?page=1&size=10
+
+### get post
+GET localhost:8080/posts/1
+
+### 수정
+PATCH localhost:8080/posts/1
+Content-Type: application/json
+
+{
+  "title": "제목 수정입니다.",
+  "content": "내용 수정입니다."
+}
 
 ### 게시글 삭제
-
 DELETE http://localhost:8080/posts/1
 Content-Type: application/json
+
+
+//"/posts/{postId}" get
+//"/posts" get
+//"/posts/{postId}" pach

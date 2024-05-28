@@ -2,11 +2,14 @@ package com.betrue.kkanbufs_be.service;
 
 import com.betrue.kkanbufs_be.domain.Post;
 import com.betrue.kkanbufs_be.domain.PostEditor;
+import com.betrue.kkanbufs_be.domain.Session;
+import com.betrue.kkanbufs_be.domain.user.User;
 import com.betrue.kkanbufs_be.exception.PostNotFound;
+import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.repository.PostRepository;
 import com.betrue.kkanbufs_be.request.PostCreate;
 import com.betrue.kkanbufs_be.request.PostEdit;
-import com.betrue.kkanbufs_be.request.PostSearch;
+import com.betrue.kkanbufs_be.request.Search;
 import com.betrue.kkanbufs_be.response.PostResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +26,16 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public void write(PostCreate postCreate){
+    public void write(PostCreate postCreate, Session session){
+        User user = session.getUser();
         //postCreate -> Entity
         Post post = Post.builder()
+                .user(user)
                 .title(postCreate.getTitle())
                 .content(postCreate.getContent())
                 .build();
+
+        user.addPost(post);
 
        postRepository.save(post);
     }
@@ -42,16 +49,9 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .build();
-        /*
-        * PostController -> WebPostService -> Repository
-        *                   PostService
-        */
-    }
 
-    //글이 너무 많은 경우 -> 비용이 너무 많이 든다.
-    //글리 -> 100.000.000-> DB글 모두 조회하는 경우 -> DB가 뻗을 수 있다.
-    //DB-> 애플리케이션 서버로 전달하는 시간, 트래픽비용 등이 많이 들 수 있다.
-    public List<PostResponse> getList(PostSearch postSearch) {
+    }
+    public List<PostResponse> getList(Search postSearch) {
         //web -> page 1 -> 0 변환해줌 yml
         return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
@@ -59,9 +59,13 @@ public class PostService {
     }
 
     @Transactional
-    public void edit(Long id, PostEdit postEdit) {
+    public void edit(Long id, PostEdit postEdit, Session session) {
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFound::new);
+            .orElseThrow(PostNotFound::new);
+
+        User user = session.getUser();
+
+        if(!user.getId().equals(post.getUser().getId())) throw new Unauthorized();
 
         PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
 
@@ -82,9 +86,13 @@ public class PostService {
         post.edit( editorBuilder.build());*/
     }
 
-    public void delete(Long id) {
+    public void delete(Long id, Session session) {
         Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFound::new);
+
+        User user = session.getUser();
+
+        if(!user.getId().equals(post.getUser().getId())) throw new Unauthorized();
 
         postRepository.delete(post);
     }

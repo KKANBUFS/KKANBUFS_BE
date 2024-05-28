@@ -1,7 +1,8 @@
 package com.betrue.kkanbufs_be.controller;
 
-import com.betrue.kkanbufs_be.request.Login;
-import com.betrue.kkanbufs_be.request.Signup;
+import com.betrue.kkanbufs_be.domain.Session;
+import com.betrue.kkanbufs_be.exception.Unauthorized;
+import com.betrue.kkanbufs_be.request.*;
 import com.betrue.kkanbufs_be.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,20 +10,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import java.time.Duration;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<Object> signin(@RequestBody @Valid Login login) {
         String accessToken = authService.signin(login);
         ResponseCookie cookie = ResponseCookie.from("SESSION", accessToken)
@@ -32,16 +33,25 @@ public class AuthController {
                 .maxAge(Duration.ofDays(30))
                 .sameSite("Strict")
                 .build();
-        log.info(">>> cookie = {}",cookie);
-        log.info(">>> cookie name = {}",cookie.getName());
+        log.info(">>> cookie = {}", cookie);
+        log.info(">>> cookie name = {}", cookie.getName());
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
     }
 
-    @PostMapping("/auth/signup")
-    public void signup(@RequestBody @Valid Signup signup){
-        authService.signup(signup);
-    }
+    @DeleteMapping("/logout")
+    public ResponseEntity<Object> logout(NativeWebRequest webRequest) {
+        Session session = authService.getSession(webRequest);
+        if (session == null || session.equals("")) {
+            throw new Unauthorized();
+        }
 
+        authService.logout(session);
+
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, "")
+                .build();
+    }
 }

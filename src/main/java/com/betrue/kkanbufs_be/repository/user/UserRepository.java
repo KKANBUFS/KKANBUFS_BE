@@ -1,6 +1,6 @@
-package com.betrue.kkanbufs_be.repository;
+package com.betrue.kkanbufs_be.repository.user;
 
-import com.betrue.kkanbufs_be.domain.User;
+import com.betrue.kkanbufs_be.domain.user.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

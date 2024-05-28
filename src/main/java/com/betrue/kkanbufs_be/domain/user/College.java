@@ -27,11 +27,7 @@ public class College extends User {
         this.instagram = instagram;
     }
 
-   /* public PartnerShip addPartnerShip(PartnerShipCreate partnerShipCreate) {
-        PartnerShip.builder()
-                .partner()
-                .college().build();
+    public void addPartnerShip(PartnerShip partnerShip) {
         partnerShips.add(partnerShip);
-        return partnerShip;
-    }*/
+    }
 }

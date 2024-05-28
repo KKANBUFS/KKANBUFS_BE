@@ -7,13 +7,18 @@ import com.betrue.kkanbufs_be.domain.user.Student;
 import com.betrue.kkanbufs_be.domain.user.User;
 import com.betrue.kkanbufs_be.exception.AlreadyExistsEmailException;
 import com.betrue.kkanbufs_be.exception.InvalidSinginInformation;
+import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.exception.UserNotFound;
+import com.betrue.kkanbufs_be.repository.SessionRepository;
 import com.betrue.kkanbufs_be.repository.UserRepository;
 import com.betrue.kkanbufs_be.request.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Optional;
 
@@ -21,7 +26,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
+
+    private final SessionRepository sessionRepository;
 
     @Transactional
     public String signin(Login login) {
@@ -88,4 +96,26 @@ public class AuthService {
 
         userRepository.save(partner);
     }
+
+    public Session getSession(NativeWebRequest webRequest) {
+        HttpServletRequest serveletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+        if(serveletRequest == null) {
+            log.error("servlet request is null");
+            throw new Unauthorized();
+        }
+
+        Cookie[] cookies = serveletRequest.getCookies();
+        if(cookies.length==0){
+            log.error("cookie is empty");
+            throw new Unauthorized();
+        }
+
+        String accessToken = cookies[0].getValue();
+
+        Session session = sessionRepository.findByAccessToken(accessToken)
+                .orElseThrow(Unauthorized::new);
+
+        return session;
+    }
+
 }

@@ -21,9 +21,12 @@ public class PartnerShip {
     @ManyToOne
     private College college;
 
+    private String benefit;
+
     @Builder
-    public PartnerShip(College college, Partner partner) {
+    public PartnerShip(College college, Partner partner, String benefit) {
         this.college = college;
         this.partner = partner;
+        this.benefit = benefit;
     }
 }

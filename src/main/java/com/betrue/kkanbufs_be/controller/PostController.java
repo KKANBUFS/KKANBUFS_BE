@@ -1,17 +1,24 @@
 package com.betrue.kkanbufs_be.controller;
 
 import com.betrue.kkanbufs_be.config.data.UserSession;
+import com.betrue.kkanbufs_be.domain.Session;
+import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.repository.PostRepository;
 import com.betrue.kkanbufs_be.request.PostCreate;
 import com.betrue.kkanbufs_be.request.PostEdit;
 import com.betrue.kkanbufs_be.request.PostSearch;
 import com.betrue.kkanbufs_be.response.PostResponse;
+import com.betrue.kkanbufs_be.service.AuthService;
 import com.betrue.kkanbufs_be.service.PostService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.NativeWebRequest;
 
+import java.net.http.HttpHeaders;
 import java.util.List;
 
 //SSR -> jsp,thymeleaf,mustache, freemarker
@@ -35,36 +42,21 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final PostRepository postRepository;
 
-
-    @GetMapping("/foo")
-    public Long foo(UserSession userSession){
-        log.info(">>>{}", userSession.id);
-
-        return userSession.id;
-    }
-
-    @GetMapping("/bar")
-    public String bar(UserSession userSession){
-        return "인증이 필요한 페이지 입니다.";
-    }
+    private final AuthService authService;
 
     //글 등록
     @PostMapping("/posts")
-    public void post(@RequestBody @Valid PostCreate request){
+    public void post(NativeWebRequest webRequest, @RequestBody @Valid PostCreate request){
         request.validate();
-        postService.write(request);
-        //return postService.write(request);
+        Session session = authService.getSession(webRequest);
+
+        postService.write(request,session);
     }
 
     @GetMapping("/posts/{postId}")
     public PostResponse get(@PathVariable(name = "postId") Long id) {
-        //Request 클래스 요청과 벨리데이션 용
-        //Response 클래스 정책등을 반영한 응답 전용 클래스
-
         return postService.get(id);
-        //응답 클래스를 분리하세요(서비스 정책의 맞는)
     }
 
     @GetMapping("/posts")

@@ -2,8 +2,12 @@ package com.betrue.kkanbufs_be.service;
 
 import com.betrue.kkanbufs_be.domain.Post;
 import com.betrue.kkanbufs_be.domain.PostEditor;
+import com.betrue.kkanbufs_be.domain.Session;
+import com.betrue.kkanbufs_be.domain.user.User;
 import com.betrue.kkanbufs_be.exception.PostNotFound;
 import com.betrue.kkanbufs_be.repository.PostRepository;
+import com.betrue.kkanbufs_be.repository.SessionRepository;
+import com.betrue.kkanbufs_be.repository.UserRepository;
 import com.betrue.kkanbufs_be.request.PostCreate;
 import com.betrue.kkanbufs_be.request.PostEdit;
 import com.betrue.kkanbufs_be.request.PostSearch;
@@ -14,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,12 +28,16 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public void write(PostCreate postCreate){
+    public void write(PostCreate postCreate, Session session){
+        User user = session.getUser();
         //postCreate -> Entity
         Post post = Post.builder()
+                .user(user)
                 .title(postCreate.getTitle())
                 .content(postCreate.getContent())
                 .build();
+
+        user.addPost(post);
 
        postRepository.save(post);
     }

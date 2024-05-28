@@ -25,15 +25,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String name;
 
     @Column(unique = true)
     private String loginId; // 아이디
 
     private String password;
-
-    private LocalDateTime createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Session> sessions = new ArrayList<>();
@@ -51,20 +48,17 @@ public class User {
         return session;
     }
 
-    public Post addPost(PostCreate postCreate){
-        Post post = Post.builder()
-                .title(postCreate.getTitle())
-                .content(postCreate.getContent())
-                .build();
+    public void removeSession(Session session){
+        sessions.remove(session);
+    }
 
+    public void addPost(Post post){
         posts.add(post);
-        return post;
     }
 
     public User(String name, String loginId, String password) {
         this.name = name;
         this.loginId = loginId;
         this.password = password;
-        this.createdAt = LocalDateTime.now();
     }
 }

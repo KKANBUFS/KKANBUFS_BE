@@ -50,5 +50,4 @@ public class AuthController {
     public void signup(@RequestBody @Valid PartnerSignup signup){
         authService.signup(signup);
     }
-
 }

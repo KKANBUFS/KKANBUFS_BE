@@ -10,9 +10,9 @@ import lombok.ToString;
 @ToString
 @Getter
 public class PartnerShipCreate {
-    private String partnerId;
+    private final String partnerId;
 
-    private String benefit;
+    private final String benefit;
 
     @Builder
     public PartnerShipCreate(String partnerId, String benefit) {

@@ -15,19 +15,16 @@ public class StudentSignup extends Signup {
 
     private final String college;
 
-    private final String dept;
-
     private final String phoneNum;
 
     private final boolean sex;
 
     private final boolean identified;
 
-    public StudentSignup(String name, String loginId, String password, String studentUnm, String college, String dept, String phoneNum, boolean sex) {
+    public StudentSignup(String name, String loginId, String password, String studentUnm, String college, String phoneNum, boolean sex) {
         super(name, loginId, password);
         this.studentUnm = studentUnm;
         this.college = college;
-        this.dept = dept;
         this.phoneNum = phoneNum;
         this.sex = sex;
         this.identified = true;

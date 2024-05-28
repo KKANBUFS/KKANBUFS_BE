@@ -1,11 +1,9 @@
 package com.betrue.kkanbufs_be.controller;
 
 import com.betrue.kkanbufs_be.domain.Session;
-import com.betrue.kkanbufs_be.exception.UserNotFound;
+import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.request.*;
 import com.betrue.kkanbufs_be.service.AuthService;
-import com.betrue.kkanbufs_be.service.PartnerShipService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,13 +40,18 @@ public class AuthController {
                 .build();
     }
 
-    @DeleteMapping("/logout/{loginId}")
-    public void logout(NativeWebRequest webRequest) {
+    @DeleteMapping("/logout")
+    public ResponseEntity<Object> logout(NativeWebRequest webRequest) {
         Session session = authService.getSession(webRequest);
-        if (session != null) {
-            throw new UserNotFound();
+        if (session == null || session.equals("")) {
+            throw new Unauthorized();
         }
 
         authService.logout(session);
+
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, "")
+                .build();
     }
 }

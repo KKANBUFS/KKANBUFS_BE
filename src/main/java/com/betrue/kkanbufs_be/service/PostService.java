@@ -9,7 +9,7 @@ import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.repository.PostRepository;
 import com.betrue.kkanbufs_be.request.PostCreate;
 import com.betrue.kkanbufs_be.request.PostEdit;
-import com.betrue.kkanbufs_be.request.PostSearch;
+import com.betrue.kkanbufs_be.request.Search;
 import com.betrue.kkanbufs_be.response.PostResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,16 +49,9 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .build();
-        /*
-        * PostController -> WebPostService -> Repository
-        *                   PostService
-        */
-    }
 
-    //글이 너무 많은 경우 -> 비용이 너무 많이 든다.
-    //글리 -> 100.000.000-> DB글 모두 조회하는 경우 -> DB가 뻗을 수 있다.
-    //DB-> 애플리케이션 서버로 전달하는 시간, 트래픽비용 등이 많이 들 수 있다.
-    public List<PostResponse> getList(PostSearch postSearch) {
+    }
+    public List<PostResponse> getList(Search postSearch) {
         //web -> page 1 -> 0 변환해줌 yml
         return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)

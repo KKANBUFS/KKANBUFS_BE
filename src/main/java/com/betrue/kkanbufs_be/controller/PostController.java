@@ -1,25 +1,21 @@
 package com.betrue.kkanbufs_be.controller;
 
-import com.betrue.kkanbufs_be.config.data.UserSession;
 import com.betrue.kkanbufs_be.domain.Session;
+import com.betrue.kkanbufs_be.exception.PostNotFound;
 import com.betrue.kkanbufs_be.exception.Unauthorized;
-import com.betrue.kkanbufs_be.exception.UserNotFound;
 import com.betrue.kkanbufs_be.repository.PostRepository;
 import com.betrue.kkanbufs_be.request.PostCreate;
 import com.betrue.kkanbufs_be.request.PostEdit;
-import com.betrue.kkanbufs_be.request.PostSearch;
+import com.betrue.kkanbufs_be.request.Search;
 import com.betrue.kkanbufs_be.response.PostResponse;
 import com.betrue.kkanbufs_be.service.AuthService;
 import com.betrue.kkanbufs_be.service.PostService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.net.http.HttpHeaders;
 import java.util.List;
 
 //SSR -> jsp,thymeleaf,mustache, freemarker
@@ -45,13 +41,16 @@ public class PostController {
     private final PostService postService;
 
     private final AuthService authService;
+    private final PostRepository postRepository;
 
     //글 등록
     @PostMapping("/posts")
     public void post(@RequestBody @Valid PostCreate request,NativeWebRequest webRequest){
         request.validate();
         Session session = authService.getSession(webRequest);
-        if (session == null) {throw new Unauthorized();}
+        if (session == null || session.equals("")) {
+            throw new Unauthorized();
+        }
         postService.write(request,session);
     }
 
@@ -61,21 +60,26 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getAll(@ModelAttribute PostSearch postSearch) {
+    public List<PostResponse> getAll(@ModelAttribute Search postSearch) {
         return postService.getList(postSearch);
     }
 
     @PatchMapping("/posts/{postId}")
     public void edit(@PathVariable(name = "postId") Long postId, @RequestBody @Valid PostEdit request,NativeWebRequest webRequest) {
+        postRepository.findById(postId).orElseThrow(PostNotFound::new);
         Session session = authService.getSession(webRequest);
-        if (session == null) {throw new Unauthorized();}
+        if (session == null || session.equals("")) {
+            throw new Unauthorized();
+        }
         postService.edit(postId, request,session);
     }
 
     @DeleteMapping("/posts/{postId}")
     public void delete(@PathVariable(name = "postId") Long id, NativeWebRequest webRequest) {
         Session session = authService.getSession(webRequest);
-        if (session == null) {throw new Unauthorized();}
+        if (session == null || session.equals("")) {
+            throw new Unauthorized();
+        }
         postService.delete(id,session);
     }
 }

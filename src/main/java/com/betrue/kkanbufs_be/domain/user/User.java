@@ -49,7 +49,7 @@ public class User {
     }
 
     public void removeSession(){
-        sessions.clear();
+        sessions = new ArrayList<>();
     }
 
     public void addPost(Post post){

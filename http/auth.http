@@ -1,6 +1,6 @@
 ### 학생 회원가입
 
-POST http://localhost:8080/auth/student/signup
+POST http://localhost:8080/student/signup
 Content-Type: application/json
 
 {
@@ -9,14 +9,13 @@ Content-Type: application/json
   "password": "1234",
   "studentUnm": "20191769",
   "college": "이공대",
-  "dept": "컴퓨터공학과",
   "phoneNum": "010-67687-7657",
   "sex": true
 }
 
 ### 단대 회원가입
 
-POST http://localhost:8080/auth/college/signup
+POST http://localhost:8080/college/signup
 Content-Type: application/json
 
 {
@@ -27,7 +26,7 @@ Content-Type: application/json
 }
 
 ### 업체 회원가입
-POST http://localhost:8080/auth/partner/signup
+POST http://localhost:8080/partner/signup
 Content-Type: application/json
 
 {
@@ -49,9 +48,12 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "loginId": "userid1",
+  "loginId": "college1",
   "password": "1234"
 }
+
+### 로그아웃
+DELETE localhost:8080/auth/logout
 
 ### 인증 페이지 요청
 GET http://localhost:8080/foo

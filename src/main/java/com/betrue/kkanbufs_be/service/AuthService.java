@@ -10,7 +10,8 @@ import com.betrue.kkanbufs_be.exception.InvalidSinginInformation;
 import com.betrue.kkanbufs_be.exception.Unauthorized;
 import com.betrue.kkanbufs_be.exception.UserNotFound;
 import com.betrue.kkanbufs_be.repository.SessionRepository;
-import com.betrue.kkanbufs_be.repository.UserRepository;
+import com.betrue.kkanbufs_be.repository.user.StudentRepository;
+import com.betrue.kkanbufs_be.repository.user.UserRepository;
 import com.betrue.kkanbufs_be.request.*;
 import com.betrue.kkanbufs_be.response.LoginIdResponse;
 import com.betrue.kkanbufs_be.response.PwResponse;
@@ -30,6 +31,8 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepository userRepository;
+
+    private final StudentRepository studentRepository;
 
     private final SessionRepository sessionRepository;
 
@@ -57,7 +60,6 @@ public class AuthService {
                 .password(signup.getPassword())
                 .name(signup.getName())
                 .college(signup.getCollege())
-                .dept(signup.getDept())
                 .phoneNum(signup.getPhoneNum())
                 .studentUnm(signup.getStudentUnm())
                 .build();
@@ -100,7 +102,9 @@ public class AuthService {
     }
 
     public void logout(Session session) {
-       session.getUser().removeSession();
+        User user = session.getUser();
+        sessionRepository.delete(session);
+        user.removeSession();
     }
 
     public Session getSession(NativeWebRequest webRequest) {
@@ -125,16 +129,20 @@ public class AuthService {
     }
 
     public LoginIdResponse findLoginId(FindId findId) {
-        User user = userRepository.findByStudentNum(findId.getStudentNum())
+        User user = studentRepository.findByStudentUnm(findId.getStudentNum())
                 .orElseThrow(UserNotFound::new);
 
         return LoginIdResponse.builder().loginid(user.getLoginId()).build();
     }
 
     public PwResponse findPw(FindPw findPW) {
-        User user = userRepository.findByLoginIdAndStudentNum(findPW.getLoginId(), findPW.getStudentNum())
+        User user = studentRepository.findByLoginIdAndStudentUnm(findPW.getLoginId(), findPW.getStudentNum())
                 .orElseThrow(UserNotFound::new);
 
         return PwResponse.builder().password(user.getPassword()).build();
+    }
+
+    public Student findByLoginId(String loginId) {
+       return studentRepository.findByLoginId(loginId).orElseThrow(UserNotFound::new);
     }
 }

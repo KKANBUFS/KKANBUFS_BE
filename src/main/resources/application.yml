@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mariadb://127.0.0.1:3308/KKANBUFS
-    username: root
-    password: root
+    url: jdbc:mariadb://${DB_HOST}:${DB_POST}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
   data:

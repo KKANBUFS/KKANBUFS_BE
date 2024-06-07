@@ -22,6 +22,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 @Slf4j
 @RestController
+
+@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/student")
 public class StudentController {

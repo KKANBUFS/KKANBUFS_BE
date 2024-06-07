@@ -1,6 +1,6 @@
 ### 게시글 작성
 
-POST http://localhost:8080/posts
+POST  http://localhost:8080/posts
 Content-Type: application/json
 
 {
@@ -26,8 +26,3 @@ Content-Type: application/json
 ### 게시글 삭제
 DELETE http://localhost:8080/posts/1
 Content-Type: application/json
-
-
-//"/posts/{postId}" get
-//"/posts" get
-//"/posts/{postId}" pach

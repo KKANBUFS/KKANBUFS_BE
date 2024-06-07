@@ -4,14 +4,15 @@ POST http://localhost:8080/student/signup
 Content-Type: application/json
 
 {
-  "name": "김동혁",
-  "loginId": "userid1",
-  "password": "1234",
-  "studentUnm": "20191769",
-  "college": "이공대",
-  "phoneNum": "010-67687-7657",
-  "sex": true
+"name": "김동혁",
+"loginId": "userid1",
+"password": "1234",
+"studentUnm": "20191769",
+"college": "이공대",
+"phoneNum": "010-67687-7657",
+"sex": true
 }
+
 
 ### 단대 회원가입
 

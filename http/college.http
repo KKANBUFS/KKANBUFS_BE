@@ -1,11 +1,11 @@
 ### 제휴
 
-POST http://localhost:8080/college/partnership
+POST  http://localhost:8080/college/partnership
 Content-Type: application/json
 
 {
   "partnerId": "partner1",
-  "benefit": "대충 내용"
+  "benefit": "대충 dd"
 }
 
 ### 제휴 리스트

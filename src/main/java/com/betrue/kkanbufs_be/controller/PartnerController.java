@@ -65,7 +65,7 @@ public class PartnerController {
     }
 
     @PostMapping("/qr")
-    public PartnerShipResponse qr(@RequestBody QrRequest qrRequest, NativeWebRequest webRequest) {
+    public void qr(@RequestBody QrRequest qrRequest, NativeWebRequest webRequest) {
         Session session = authService.getSession(webRequest);
         if (session == null || session.equals("")) {
             throw new Unauthorized();
@@ -79,7 +79,7 @@ public class PartnerController {
                     collegeRepository.findByName(student.getCollege()).orElseThrow(UnChecked::new)).orElseThrow(PartnerShipNotFound::new);
 
 
-            return PartnerShipResponse.builder()
+            PartnerShipResponse.builder()
                     .college(partnerShip.getCollege())
                     .benefit(partnerShip.getBenefit())
                     .partner(partnerShip.getPartner())

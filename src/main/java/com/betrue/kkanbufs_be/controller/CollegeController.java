@@ -26,6 +26,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/college")
 public class CollegeController {
